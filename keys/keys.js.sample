@@ -1,0 +1,10 @@
+let geocodekey = 'KEY_GOES_HERE';
+//https://api.opencagedata.com
+
+let darkskykey = 'KEY_GOES_HERE';
+//https://api.darksky.net
+
+module.exports = {
+	geocodekey,
+	darkskykey
+};

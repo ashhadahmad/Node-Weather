@@ -18,15 +18,13 @@ const argv = yargs
 geocode.geocodeAddress(argv.a, (errorMessage, results) => {
 	if (errorMessage) console.log(errorMessage);
 	else {
-		console.log(JSON.stringify(results, undefined, 2));
-		let location = results;
-		weather.getWeather(location, (errorMessage, results) => {
+		weather.getWeather(results, (errorMessage, weatherResults) => {
 			if (errorMessage) console.log(errorMessage);
 			else {
-				console.log(JSON.stringify(results, undefined, 2));
+				console.log(
+					`It's currently ${weatherResults.temperature}°C in ${results.address}, but it feels like ${weatherResults.apparentTemperature}°C.`
+				);
 			}
 		});
 	}
 });
-
-//8b1a18ff3e501ff65b145390d7699c75

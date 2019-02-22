@@ -1,10 +1,11 @@
 const request = require('request');
+const keys = require('../keys/keys');
 
 let geocodeAddress = (address, callback) => {
 	const encodedAddress = encodeURIComponent(address);
 	request(
 		{
-			url: `https://api.opencagedata.com/geocode/v1/json?q=${encodedAddress}&key=75b26831eca34dbea3bbe1e8e78dc507`,
+			url: `https://api.opencagedata.com/geocode/v1/json?q=${encodedAddress}&key=${keys.geocodekey}`,
 			json: true
 		},
 		(error, response, body) => {
