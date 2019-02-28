@@ -1,7 +1,6 @@
-const request = require('request');
 const yargs = require('yargs');
-const geocode = require('./geocode/geocode');
-const weather = require('./weather/weather');
+const axios = require('axios');
+const keys = require('./keys/keys');
 
 const argv = yargs
 	.options({
@@ -15,16 +14,25 @@ const argv = yargs
 	.help()
 	.alias('help', 'h').argv;
 
-geocode.geocodeAddress(argv.a, (errorMessage, results) => {
-	if (errorMessage) console.log(errorMessage);
-	else {
-		weather.getWeather(results, (errorMessage, weatherResults) => {
-			if (errorMessage) console.log(errorMessage);
-			else {
-				console.log(
-					`It's currently ${weatherResults.temperature}°C in ${results.address}, but it feels like ${weatherResults.apparentTemperature}°C.`
-				);
-			}
-		});
-	}
-});
+let encodedAddress = encodeURIComponent(argv.a);
+let geocodeURL = `https://api.opencagedata.com/geocode/v1/json?q=${encodedAddress}&key=${keys.geocodekey}`;
+
+let address;
+axios
+	.get(geocodeURL)
+	.then((response) => {
+		if (!response.data.results[0]) throw new Error('Invalid Address');
+		address = response.data.results[0].formatted;
+		let weatherURL = `https://api.darksky.net/forecast/${keys.darkskykey}/${response.data.results[0].geometry
+			.lat},${response.data.results[0].geometry.lng}?units=si`;
+		return axios.get(weatherURL);
+	})
+	.then((response) => {
+		let temp = response.data.currently.temperature;
+		let actualtemp = response.data.currently.apparentTemperature;
+		console.log(`It's currently ${temp}°C in ${address}, but it feels like ${actualtemp}°C.`);
+	})
+	.catch((error) => {
+		if (error.code === 'ENOTFOUND') reject('Unable to connect');
+		console.log(error.message);
+	});
