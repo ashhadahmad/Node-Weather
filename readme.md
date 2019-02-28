@@ -1,5 +1,5 @@
 ## Node Weather App
-This is a command line app, built using Node, Geocode API and Darksky api.
+This is a command line app, built using Node, Geocode API and DarkSky API.
 
 Install Instructions
 --------------------
